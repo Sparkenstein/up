@@ -1,6 +1,7 @@
 extern crate clap;
 
 use clap::{App, Arg, SubCommand};
+mod internals;
 
 fn main() {
     let args = App::new("up")
@@ -14,7 +15,7 @@ fn main() {
         )
         .get_matches();
     match args.subcommand_name() {
-        Some("deploy") => println!("Deploying new server"),
+        Some("deploy") => internals::deploy::init(),
         _ => unreachable!()
     }
 }
