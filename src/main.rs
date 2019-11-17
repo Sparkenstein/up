@@ -14,8 +14,8 @@ fn main() {
                 .arg(Arg::with_name("servername").required(true)),
         )
         .get_matches();
-    match args.subcommand_name() {
-        Some("deploy") => internals::deploy::init(),
+    match args.subcommand() {
+        ("deploy", Some(sub)) => internals::deploy::init(sub),
         _ => unreachable!()
     }
 }
