@@ -1,8 +1,12 @@
 use clap::ArgMatches;
+use std::fs::File;
+use std::io::Write;
+use std::path::PathBuf;
 
 pub fn init(deploy_args: &ArgMatches) {
     let servername = deploy_args.value_of("servername").unwrap();
     let port = deploy_args.value_of("port").unwrap();
+    let mut nginx_path = PathBuf::new();
 
     let webroot;
     if deploy_args.occurrences_of("webroot") == 0 {
@@ -18,5 +22,14 @@ pub fn init(deploy_args: &ArgMatches) {
         .replace("{{port}}", port)
         .replace("{{webroot}}", &webroot)
         .replace("{{domain}}", servername);
-    println!("{}", config);
+
+    // creating file later to avoid orphan files creating incase above code breaks.
+    nginx_path.push(format!("/etc/nginx/sites-available/{}.conf", servername));
+
+    let mut file = File::create(nginx_path).unwrap_or_else(|_e| {
+        eprintln!("Error creating file. are you sudo?");
+        std::process::exit(1)
+    });
+    file.write_all(config.as_bytes())
+        .unwrap_or_else(|e| eprintln!("Error writing file to path {}", e));
 }
