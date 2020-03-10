@@ -9,4 +9,5 @@
 # Todo
 
 - add customizable cloudflare/google dns resolvers
-- generate dhparams and use them 
+- generate dhparams and use them
+- logging
