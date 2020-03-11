@@ -1,0 +1,10 @@
+"
+server { 
+    listen  {{inport}};
+    listen [::]:{{inport}}/;
+    server_name  {{domain}};
+    location / {
+        proxy_pass http://localhost:{{outport}};
+    } 
+}
+"
