@@ -1,8 +1,8 @@
 use clap::ArgMatches;
 use std::fs::File;
-use std::os::unix::fs;
 use std::io::ErrorKind;
 use std::io::Write;
+use std::os::unix::fs;
 use std::path::PathBuf;
 
 pub fn init(deploy_args: &ArgMatches) {
