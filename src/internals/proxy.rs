@@ -1,5 +1,6 @@
 use clap::ArgMatches;
 use std::fs::File;
+use std::os::unix::fs;
 use std::io::ErrorKind;
 use std::io::Write;
 use std::path::PathBuf;
@@ -16,8 +17,8 @@ pub fn init(deploy_args: &ArgMatches) {
         .replace("{{domain}}", servername);
 
     nginx_path.push(format!("/etc/nginx/sites-available/{}.conf", servername));
-    println!("{}", config);
-    let mut file = File::create(nginx_path).unwrap_or_else(|e| match e.kind() {
+
+    let mut file = File::create(&nginx_path).unwrap_or_else(|e| match e.kind() {
         ErrorKind::PermissionDenied => {
             eprintln!("Error occurred while creating config files, Permission Denied. Are you running as sudo?");
             std::process::exit(1)
@@ -29,4 +30,10 @@ pub fn init(deploy_args: &ArgMatches) {
 
     file.write_all(config.as_bytes())
         .unwrap_or_else(|e| eprintln!("Error writing file to path {}", e));
+    let symlink_path = &nginx_path
+        .to_str()
+        .unwrap()
+        .replace("sites-available", "sites-enabled");
+    fs::symlink(nginx_path, symlink_path)
+        .unwrap_or_else(|e| eprintln!("Error Symlinking file {}", e));
 }
