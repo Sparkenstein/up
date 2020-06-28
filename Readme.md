@@ -7,16 +7,17 @@
 
 
 # Todo
+Bold are important
 
-- add customizable cloudflare/google dns resolvers
+- *add customizable cloudflare/google dns resolvers*
 - generate dhparams and use them
-- logging
+- *logging*
 - decide fallback index.html or 404
 - print help message when no sub command is provided
 - location should be configurable instead of just /
-- check first nginx exists and /etc/nginx is available
 - add too many tests
-- check if site already exists
+- client max body size configurable?
+- *Multiple sites at once*
 
 
 # Notes
