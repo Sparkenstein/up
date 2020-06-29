@@ -16,6 +16,7 @@ Bold are important
 - client max body size configurable?
 - *Multiple sites at once*
 - *generate configuration only, at current directly* (user may not want to just override the /etc/nginx directly without seeing what tool is doing first)
+- *make UI interesting please*
 
 
 # Notes
@@ -26,7 +27,3 @@ Bold are important
   - `tar`, `openssl` and `certbot` binaries are in $PATH
 
 # next steps
-- backup current configuration
-- generate dhparams, without openssl bindings possibly? they are huge. otherwise see binary size changes
-  - `openssl::dh::Dh::get_2048_256()` should be it
-- 

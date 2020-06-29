@@ -3,7 +3,7 @@ use std::io::ErrorKind;
 use std::io::Write;
 use std::os::unix::fs;
 use std::path::PathBuf;
-use std::process::Command;
+use std::process::{Command, Stdio};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 pub fn make_symlink(nginx_path: PathBuf) {
@@ -28,7 +28,7 @@ pub fn write_file(nginx_path: &PathBuf, config: String) {
 }
 
 pub fn backup_config() {
-    println!("\nCreating backup of current configuration in curent directory");
+    println!("Creating backup of current configuration in /etc/nginx");
 
     let start = SystemTime::now();
     let since_the_epoch = start
@@ -43,12 +43,33 @@ pub fn backup_config() {
         .arg("sites-available/")
         .arg("sites-enabled/")
         .current_dir("/etc/nginx/")
-        .status()
+        .stdout(Stdio::null())
+        .output()
         .expect("Failed to execute");
-    if op.success() {
+    if op.status.success() {
         println!("Backup created successfully");
     } else {
         eprintln!("Failed to create backup of current config");
         std::process::exit(1);
+    }
+}
+
+pub fn gen_dh_params() {
+    let current_file = PathBuf::from("/etc/nginx/dhparam.pem");
+    if !current_file.exists() {
+        println!("Generating DH parameters, 2048 bit long safe prime, generator 2");
+        println!("This is going to take a LONG time");
+        let dhparams = Command::new("openssl")
+            .arg("dhparam")
+            .arg("-out")
+            .arg("/etc/nginx/dhparam.pem")
+            .arg("128")
+            // .arg("&>/dev/null")
+            .stdout(Stdio::null())
+            .output()
+            .expect("Error in generating dhparams");
+        if dhparams.status.success() {
+            print!("dhparams generated succesfully\n")
+        }
     }
 }

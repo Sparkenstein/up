@@ -14,7 +14,12 @@ pub fn init(deploy_args: &ArgMatches) {
         .replace("{{domain}}", servername);
 
     nginx_path.push(format!("/etc/nginx/sites-available/{}.conf", servername));
+
     utils::backup_config();
+
+    utils::gen_dh_params();
+
     utils::write_file(&nginx_path, config);
+
     utils::make_symlink(nginx_path);
 }

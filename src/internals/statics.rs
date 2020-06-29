@@ -33,6 +33,8 @@ pub fn init(deploy_args: &ArgMatches) {
     }
     utils::backup_config();
 
+    utils::gen_dh_params();
+
     utils::write_file(&nginx_path, config);
 
     utils::make_symlink(nginx_path);
