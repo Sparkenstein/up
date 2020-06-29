@@ -2,9 +2,6 @@
 
 ## WIP - unusable at the moment
 
-- features
-    - default opendns resolver
-
 
 # Todo
 Bold are important
@@ -18,9 +15,18 @@ Bold are important
 - add too many tests
 - client max body size configurable?
 - *Multiple sites at once*
+- *generate configuration only, at current directly* (user may not want to just override the /etc/nginx directly without seeing what tool is doing first)
 
 
 # Notes
 - root is not required when reverse proxy is enabled
 - #[cfg(unix)] for main function? won't be supporting windows anyhow
-- assumed that `/etc/nginx` is going to be default path, and other folder structure of nginx is unchanged
+- Assumptions:
+  - `/etc/nginx` is going to be default path, and other folder structure of nginx is unchanged
+  - `tar`, `openssl` and `certbot` binaries are in $PATH
+
+# next steps
+- backup current configuration
+- generate dhparams, without openssl bindings possibly? they are huge. otherwise see binary size changes
+  - `openssl::dh::Dh::get_2048_256()` should be it
+- 
