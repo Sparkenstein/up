@@ -1,8 +1,5 @@
+use crate::internals::utils;
 use clap::ArgMatches;
-use std::fs::File;
-use std::io::ErrorKind;
-use std::io::Write;
-use std::os::unix::fs;
 use std::path::PathBuf;
 
 pub fn init(deploy_args: &ArgMatches) {
@@ -18,22 +15,6 @@ pub fn init(deploy_args: &ArgMatches) {
 
     nginx_path.push(format!("/etc/nginx/sites-available/{}.conf", servername));
 
-    let mut file = File::create(&nginx_path).unwrap_or_else(|e| match e.kind() {
-        ErrorKind::PermissionDenied => {
-            eprintln!("Error occurred while creating config files, Permission Denied. Are you running as sudo?");
-            std::process::exit(1)
-        }
-        _ => {
-            std::process::exit(1)
-        }
-    });
-
-    file.write_all(config.as_bytes())
-        .unwrap_or_else(|e| eprintln!("Error writing file to path {}", e));
-    let symlink_path = &nginx_path
-        .to_str()
-        .unwrap()
-        .replace("sites-available", "sites-enabled");
-    fs::symlink(nginx_path, symlink_path)
-        .unwrap_or_else(|e| eprintln!("Error Symlinking file {}", e));
+    utils::write_file(&nginx_path, config);
+    utils::make_symlink(nginx_path);
 }
