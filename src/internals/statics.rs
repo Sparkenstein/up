@@ -1,8 +1,6 @@
-use clap::ArgMatches;
-
-
-use std::path::PathBuf;
 use crate::internals::utils;
+use clap::ArgMatches;
+use std::path::PathBuf;
 
 pub fn init(deploy_args: &ArgMatches) {
     let servername = deploy_args.value_of("servername").unwrap();
@@ -33,9 +31,9 @@ pub fn init(deploy_args: &ArgMatches) {
         );
         std::process::exit(1);
     }
+    utils::backup_config();
 
     utils::write_file(&nginx_path, config);
-    
+
     utils::make_symlink(nginx_path);
-    
 }
