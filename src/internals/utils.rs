@@ -73,3 +73,23 @@ pub fn gen_dh_params() {
         }
     }
 }
+
+pub fn copy_base_config(base_config: String) {
+    let mut conf_file = File::create("/etc/nginx/nginx.conf").unwrap_or_else(|e| match e.kind() {
+        ErrorKind::PermissionDenied => {
+            eprintln!("Error occurred while creating config files, Permission Denied. Are you running as sudo?");
+            std::process::exit(1)
+        }
+        ErrorKind::NotFound => {
+            eprintln!("Cannot find the path specified");
+            std::process::exit(1)
+        }
+        _ => {
+            eprintln!("Error");
+            std::process::exit(1)
+        }
+    });
+    conf_file
+        .write_all(base_config.as_bytes())
+        .unwrap_or_else(|e| eprintln!("Error writing file to path {}", e));
+}
