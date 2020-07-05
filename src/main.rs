@@ -54,8 +54,28 @@ fn main() {
                         .help("Reverse port at which server forwards request on localhost"),
                 ),
         )
+        .subcommand(
+            SubCommand::with_name("genconf")
+                .about("generate basic configuration first")
+                .arg(
+                    Arg::with_name("dns")
+                        .default_value(
+                            "1.1.1.1 1.0.0.1 8.8.8.8 8.8.4.4 208.67.222.222 208.67.220.220",
+                        )
+                        .long("dns")
+                        .help("Provide list of dns servers, comma separated."),
+                )
+                .arg(
+                    Arg::with_name("max-body-size")
+                        .default_value("16M")
+                        .long("max-body-size")
+                        .short("m")
+                        .help("global maximum client body size"),
+                ),
+        )
         .get_matches();
     match args.subcommand() {
+        ("genconf", Some(sub)) => internals::conf::init(sub),
         ("static", Some(sub)) => internals::statics::init(sub),
         ("proxy", Some(sub)) => internals::proxy::init(sub),
         _ => eprintln!("Please provide a command. use -h for help"),
